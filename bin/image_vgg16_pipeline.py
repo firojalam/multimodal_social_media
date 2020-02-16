@@ -214,9 +214,9 @@ if __name__ == "__main__":
         "{0:.4f}".format(R)) + "\t" + str("{0:.4f}".format(F1))+ "\t" + str("{0:.4f}".format(AUC)) + "\n"
     print(result)
     print (report)
-    out_file.write(options.val_data + "\n")
-    out_file.write(result)
-    out_file.write(report)
+    outFile.write(options.val_data + "\n")
+    outFile.write(result)
+    outFile.write(report)
     val_data=[]
     test_data = preprocess_input_vgg(test_data)
     test_prob=model.predict([test_data], batch_size=batch_size, verbose=1)
