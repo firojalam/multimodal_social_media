@@ -66,9 +66,12 @@ def save_model(model, model_dir, model_file_name, tokenizer, label_encoder):
         pickle.dump(label_encoder, handle, protocol=pickle.HIGHEST_PROTOCOL)
     files.append(label_encoder_file)
 
+def dir_exist(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
-def file_exist(w2v_checkpoint):
-    if os.path.exists(w2v_checkpoint):
+def file_exist(filename):
+    if os.path.exists(filename):
         return True
     else:
         return False
@@ -110,11 +113,10 @@ if __name__ == '__main__':
 
     log_path = options.checkpoint_log
     log_dir = os.path.dirname(log_path)
-    if not os.path.exists(options.checkpoint_log):
-        os.makedirs(options.checkpoint_log)
-
+    dir_exist(log_dir)
     log_file = options.log_file
     log_path = options.checkpoint_log
+    dir_exist(log_path)
     log_dir = os.path.abspath(os.path.dirname(log_file))
     base_name = os.path.basename(log_file)
     timestr = datetime.now().strftime("%d-%m-%Y_%I-%M-%S")
@@ -142,7 +144,7 @@ if __name__ == '__main__':
     if (options.w2v_checkpoint and file_exist(options.w2v_checkpoint)):
         options.emb_matrix = pickle.load(open(options.w2v_checkpoint, "rb"))
     else:
-        model_file = "/export/home/fialam/w2v_models/crisis_word_vector.txt"
+        model_file = "$path/crisis_word_vector.txt"
         emb_model = KeyedVectors.load_word2vec_format(model_file, binary=False)
         embedding_matrix = data_process.prepare_embedding(word_index, emb_model, options.vocab_size,
                                                           options.embedding_dim)

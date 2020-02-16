@@ -4,7 +4,7 @@
 # 
 
 """
-Created on Sun Apr  2 10:33:22 2017
+Created on Sun Apr  2 10:33:22 2017; Feb/2020
 
 @author: Firoj Alam, Ferda Ofli
 Adopted from:
@@ -16,22 +16,11 @@ Adopted from:
 from keras.applications.vgg16 import VGG16
 from keras.models import Model
 from keras.layers import Dense
-from keras.applications.vgg16 import preprocess_input
-import pandas as pd
-from keras.optimizers import SGD
-import numpy as np
-from keras.preprocessing.image import ImageDataGenerator, array_to_img
 import warnings
 import datetime
 import optparse
 import os, errno
-from shutil import copyfile
-import performance_pair as performance_pair
 import performance as performance
-# import sampling as sampling
-from keras.preprocessing import image
-from keras.utils import to_categorical
-from sklearn import preprocessing
 import keras.callbacks as callbacks
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, LearningRateScheduler, CSVLogger, TensorBoard
 from gensim.models import KeyedVectors
@@ -41,17 +30,12 @@ import cnn_filter as cnn_filter
 from keras.models import load_model
 from keras.layers import concatenate
 from time import time
-# import cPickle as pickle
 import pickle
 from keras.layers.normalization import BatchNormalization
-#from crisis_data_generator import DataGenerator
 from crisis_data_generator_image_optimized import DataGenerator
 import keras
-import math
 from keras.applications.resnet50 import ResNet50
 
-os.environ["HDF5_USE_FILE_LOCKING"]="FALSE"
-#os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 class ImgInstance(object):
     def __init__(self, id=1, imgpath="", label=""):
@@ -148,6 +132,9 @@ def write_results(out_file, file_name, accu, P, R, F1, wAUC, AUC, report, conf_m
     out_file.write(report)
     out_file.write(conf_mat)
 
+def dir_exist(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
 """
 It assumes the inputs are text files, train, development and test. 
@@ -190,7 +177,8 @@ if __name__ == "__main__":
     best_model_path = options.model_file
     log_path = options.checkpoint_log
     log_dir = os.path.abspath(os.path.dirname(log_path))
-    #num_of_item = int(options.num_of_inst)
+    dir_exist(log_dir)
+
     base_name = os.path.basename(train_file)
     base_name = os.path.splitext(base_name)[0]
     log_file = log_dir + "/" + base_name + "_log_v2.txt"
@@ -207,11 +195,8 @@ if __name__ == "__main__":
     nb_epoch = options.nb_epoch
     patience_early_stop = options.patience
     patience_learning_rate = options.patience
-
+    dir_exist(options.checkpoint_log)
     delim = "\t"
-
-    if not os.path.exists(options.checkpoint_log):
-        os.makedirs(options.checkpoint_log)
 
     #### training dataset
     dir_name = os.path.dirname(train_file)
@@ -224,12 +209,8 @@ if __name__ == "__main__":
         MAX_SEQUENCE_LENGTH,int(options.label_index),
         delim)
 
-    #import sys
-    #sys.exit()
-    #print(train_image_list)
 
     #### development dataset
-    # data_file, tokenizer, MAX_SEQUENCE_LENGTH, delim
     base_name = os.path.basename(val_file)
     base_name = os.path.splitext(base_name)[0]
 
@@ -258,11 +239,9 @@ if __name__ == "__main__":
         options.emb_matrix = pickle.load(open(options.w2v_checkpoint, "rb"))
     else:
         word_vec_model_file = "/home/local/QCRI/fialam/w2v_models/crisis_word_vector.txt"
-        # word_vec_model_file = "/data/w2v_models/crisis_word_vector.txt"
         emb_model = KeyedVectors.load_word2vec_format(word_vec_model_file, binary=False)
         embedding_matrix = data_process.prepare_embedding(word_index, emb_model, options.vocab_size,
                                                           options.embedding_dim)
-        # print("Embedding size: " + str(embedding_matrix.shape))
         options.emb_matrix = embedding_matrix
         options.vocab_size, options.embedding_dim = embedding_matrix.shape
         pickle.dump(options.emb_matrix, open(options.w2v_checkpoint, "wb"))
@@ -276,12 +255,10 @@ if __name__ == "__main__":
     # R, C = train_x.shape
     text_network = Dense(1000, activation='relu')(cnn)
     text_network = BatchNormalization()(text_network)
-    #text_network = Dense(500)(text_network)
-    #text_network = Activation('relu')(text_network)
 
     ######## Image text_network ########
     last_layer_output, vgg16 = vgg_model()
-    # last_layer_output, restnet = resnet_model()
+
 
     last_layer_output = Dense(1000, activation='relu')(last_layer_output)
     last_layer_output = BatchNormalization()(last_layer_output)
@@ -298,7 +275,7 @@ if __name__ == "__main__":
     out = Dense(nb_classes, activation='softmax')(merged_network)
     model = Model(inputs=[vgg16.input, inputs], outputs=out)
 
-    #sgd = SGD(lr=1e-4, momentum=0.9)
+
     lr = 0.00001
     print("lr= "+str(lr)+", beta_1=0.9, beta_2=0.999, amsgrad=False")
     adam = keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, amsgrad=False)
@@ -310,8 +287,7 @@ if __name__ == "__main__":
     callback = callbacks.EarlyStopping(monitor='val_acc', patience=patience_early_stop, verbose=1, mode='max')
     learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc', patience=patience_learning_rate, verbose=1,
                                                 factor=0.1, min_lr=0.0001,mode='max')
-    # learning_rate_reduction = LearningRateScheduler(step_decay)
-    # loss_history = LossHistory()
+
     tensorboard = TensorBoard(log_dir=log_dir + "/{}".format(time()), write_graph=True, write_images=False,
                               batch_size=batch_size, write_grads=True, embeddings_freq=0, embeddings_layer_names=None,
                               embeddings_metadata=None)
@@ -337,10 +313,6 @@ if __name__ == "__main__":
     save_model(model, model_dir, best_model_path, tokenizer, train_le)
 
     ############ Test data  ########
-    #steps = np.ceil(len(dev_image_list) / batch_size)
-    #scores = model.evaluate_generator(val_data_generator, verbose=1)
-    #print('Development loss:', scores[0])
-    #print('Development accuracy:', scores[1])
     dir_name = os.path.dirname(out_file)
     base_name = os.path.basename(out_file)
     base_name = os.path.splitext(base_name)[0]
@@ -350,9 +322,6 @@ if __name__ == "__main__":
     dev_prob = model.predict_generator(val_data_generator, verbose=1)
     print("dev true len: "+str(len(dev_y)))
     print("dev pred len: " + str(len(dev_prob)))
-    # accu, P, R, F1, wAUC, AUC, report, conf_mat = performance.performance_measure_pair(dev_y, dev_prob, train_le, "",
-    #                                                                                    val_file, num_of_item)
-    # write_results(out_file, val_file, accu, P, R, F1, wAUC, AUC, report, conf_mat)
     AUC, accu, P, R, F1, report = performance.performance_measure_cnn(dev_y, dev_prob, train_le)
 
     result = str("{0:.4f}".format(accu)) + "\t" + str("{0:.4f}".format(P)) + "\t" + str(
@@ -377,17 +346,9 @@ if __name__ == "__main__":
     test_data_generator = DataGenerator(test_image_list, test_x, images_npy_data, test_y, **params)
 
     ######## Evaluation ########
-    #steps=np.ceil(len(test_image_list) / batch_size)
-    #scores = model.evaluate_generator(test_data_generator, verbose=1)
-    #print('Test loss:', scores[0])
-    #print('Test accuracy:', scores[1])
-
     test_prob = model.predict_generator(test_data_generator, verbose=1)
     print("test true len: "+str(len(test_y)))
     print("test pred len: " + str(len(test_prob)))
-
-    # accu, P, R, F1, wAUC, AUC, report, conf_mat = performance.performance_measure_pair(test_y, test_prob, train_le, "",
-    #                                                                                    test_file, num_of_item)
 
     AUC, accu, P, R, F1, report = performance.performance_measure_cnn(dev_y, dev_prob, train_le)
     result = str("{0:.4f}".format(accu)) + "\t" + str("{0:.4f}".format(P)) + "\t" + str(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar  4 20:42:24 2017
+Created on Sat Mar  4 20:42:24 2017; Feb/2020
 
 @author: Firoj Alam
 """
@@ -12,16 +12,10 @@ np.random.seed(1337)  # for reproducibility
 import os
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.utils.np_utils import to_categorical
 import sys
 from sklearn import preprocessing
-import pandas as pd
 import re
-from gensim.models import Word2Vec
-from gensim.models import KeyedVectors
 import aidrtokenize as aidrtokenize
-from nltk.corpus import stopwords
-import math
 from collections import Counter
 import random
 random.seed(1337)
@@ -48,7 +42,7 @@ def read_stop_words(file_name):
             stop_words.append(line)
     return stop_words;
 
-stop_words_file="bin/stop_words_english.txt"
+stop_words_file="bin/etc/stop_words_english.txt"
 stop_words = read_stop_words(stop_words_file)
 
 def clean_str(string):

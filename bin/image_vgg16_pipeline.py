@@ -128,7 +128,10 @@ def generate_data_file(data_file,delim="\t"):
     print(all_labels.shape)    
     return all_images,all_labels,id_list,le,num_class;
 
-     
+def dir_exist(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
 """
 It assumes the inputs are text files, train, development and test. 
 """
@@ -167,9 +170,6 @@ if __name__ == "__main__":
     train_data=preprocess_input_vgg(train_data)
     val_data=preprocess_input_vgg(val_data)
 
-    
-
-    
     ######## Load vgg pre-trained model ########        
     model=vgg_model(num_class);
     
@@ -177,7 +177,9 @@ if __name__ == "__main__":
     patience_early_stop = options.patience
     patience_learning_rate = options.patience
     log_path = options.checkpoint_log
+    dir_exist(log_path)
     log_dir = os.path.abspath(os.path.dirname(log_path))
+    dir_exist(log_dir)
     base_name = os.path.basename(options.train_data)
     base_name = os.path.splitext(base_name)[0]
     log_file = log_dir + "/" + base_name + "_log.txt"
