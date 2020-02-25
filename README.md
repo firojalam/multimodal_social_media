@@ -22,7 +22,7 @@ python 2.7
 
 #### Create a virtual environment
 ```
-python -m venv multimodal_env
+python -m venv multimodal_env python=2.7
 ```
 #### Activate your virtual environment
 ```
@@ -50,10 +50,10 @@ CUDA_VISIBLE_DEVICES=0 python bin/text_cnn_pipeline_unimodal.py -i data/task_dat
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python bin/image_vgg16_pipeline.py -i data/task_data/task_informative_text_img_agreed_lab_train.tsv -v data/task_data/task_informative_text_img_agreed_lab_dev.tsv -t data/task_data/task_informative_text_img_agreed_lab_test.tsv  \
--m models/informative_image.model -o results/informative_image_results_cnn_keras.txt >& log/informative_img_keras_vgg.log &
+-m models/informative_image.model -o results/informative_image_results_cnn_keras.txt >& log/informative_img_vgg16.log &
 
 CUDA_VISIBLE_DEVICES=1 python bin/image_vgg16_pipeline.py -i data/task_data/task_humanitarian_text_img_agreed_lab_train.tsv -v data/task_data/task_humanitarian_text_img_agreed_lab_dev.tsv -t data/task_data/task_humanitarian_text_img_agreed_lab_test.tsv \
--m models/humanitarian_image_vgg16_ferda.model -o results/humanitarian_image_vgg16.txt >& log/humanitarian_img_vgg16_ferda.log &
+-m models/humanitarian_image_vgg16_ferda.model -o results/humanitarian_image_vgg16.txt >& log/humanitarian_img_vgg16.log &
 
 ```
 
