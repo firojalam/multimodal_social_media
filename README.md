@@ -1,6 +1,6 @@
 # Multimodal classification of social media content
 
-Multimodal classification for social media content is an important problem. There is also a lack of resources. The idea here is to train a basic deep learning based classifiers using one of the publicly available multimodal dataset.
+Multimodal classification for social media content is an important problem. There is also a lack of resources. The idea here is to train a basic deep learning based classifiers using one of the publicly available multimodal datasets.
 
 ## Download dataset:
 Before trying to start running any script, please download the dataset first. More detail of this dataset can be found here: https://crisisnlp.qcri.org/crisismmd.html and the associated published papers.
