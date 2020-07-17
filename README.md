@@ -76,9 +76,9 @@ CUDA_VISIBLE_DEVICES=0 python bin/text_image_multimodal_combined_vgg16.py -i dat
 
 ## Please cite the following paper if you are using the data:
 
-* *Ferda Ofli, Firoj Alam, and Muhammad Imran, "Analysis of Social Media Data using Multimodal Deep Learning for Disaster Response"(https://arxiv.org/pdf/2004.11838.pdf), 17th International Conference on Information Systems for Crisis Response and Management, 2020.*
+* *Ferda Ofli, Firoj Alam, and Muhammad Imran, "Analysis of Social Media Data using Multimodal Deep Learning for Disaster Response" (https://arxiv.org/pdf/2004.11838.pdf), 17th International Conference on Information Systems for Crisis Response and Management, 2020.*
 
-* *Firoj Alam, Ferda Ofli, and Muhammad Imran, "Crisismmd: Multimodal twitter datasets from natural disasters", Twelfth International AAAI Conference on Web and Social Media. 2018.*
+* *Firoj Alam, Ferda Ofli, and Muhammad Imran, "Crisismmd: Multimodal twitter datasets from natural disasters" (https://arxiv.org/pdf/1805.00713.pdf), Twelfth International AAAI Conference on Web and Social Media. 2018.*
 
 
 ```bib
