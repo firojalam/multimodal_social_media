@@ -1,6 +1,7 @@
 # Multimodal classification of social media content
 
-Multimodal classification for social media content is an important problem. There is also a lack of resources. The idea here is to train a basic deep learning based classifiers using one of the publicly available multimodal datasets.
+
+Multimodal classification for social media content is an important problem. There is also a lack of resources. The idea here is to train a basic deep learning based classifiers using one of the publicly available multimodal datasets. Please check our paper (https://arxiv.org/pdf/2004.11838.pdf) for more details.
 
 ## Download dataset:
 Before trying to start running any script, please download the dataset first. More detail of this dataset can be found here: https://crisisnlp.qcri.org/crisismmd.html and the associated published papers.
@@ -15,7 +16,7 @@ mv CrisisMMD_v2.0/data_image $PWD/
 
 * Download the word2vec model and place it under your home or current working directory, (https://crisisnlp.qcri.org/data/lrec2016/crisisNLP_word2vec_model_v1.2.zip)
 
-You need to modify the word2vec model path in ```bin/text_cnn_pipeline_unimodal.py``` script. 
+You need to modify the word2vec model path in ```bin/text_cnn_pipeline_unimodal.py``` script.
 
 ## Install dependencies:
 python 2.7
@@ -75,9 +76,10 @@ CUDA_VISIBLE_DEVICES=0 python bin/text_image_multimodal_combined_vgg16.py -i dat
 
 ## Please cite the following paper if you are using the data:
 
+* *Ferda Ofli, Firoj Alam, and Muhammad Imran, "Analysis of Social Media Data using Multimodal Deep Learning for Disaster Response"(https://arxiv.org/pdf/2004.11838.pdf), 17th International Conference on Information Systems for Crisis Response and Management, 2020.*
+
 * *Firoj Alam, Ferda Ofli, and Muhammad Imran, "Crisismmd: Multimodal twitter datasets from natural disasters", Twelfth International AAAI Conference on Web and Social Media. 2018.*
 
-* *Ferda Ofli, Firoj Alam, and Muhammad Imran, "Analysis of Social Media Data using Multimodal Deep Learning for Disaster Response", 17th International Conference on Information Systems for Crisis Response and Management, 2020.*
 
 ```bib
 @inproceedings{multimodalbaseline2020,
